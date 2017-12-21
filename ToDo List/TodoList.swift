@@ -1,9 +1,8 @@
 //
-//  TodoList.swift
-//  ToDo List
+//  Created by
 //
-//  Created by Kshitij Suthar on 2017-12-20.
-//  Copyright © 2017 Kshitij Suthar. All rights reserved.
+//  Kshitij Suthar - 300971838
+//  Harsh Mehta - 300951815
 //
 
 import UIKit
