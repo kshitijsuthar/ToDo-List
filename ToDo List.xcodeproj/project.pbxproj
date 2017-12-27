@@ -58,8 +58,8 @@
 			children = (
 				D8FFE4051FEB312E005606AF /* AppDelegate.swift */,
 				D8FFE4091FEB312E005606AF /* Main.storyboard */,
-				D8FFE41F1FEB4C85005606AF /* TodoDetails.swift */,
 				D8FFE41D1FEB37C9005606AF /* TodoList.swift */,
+				D8FFE41F1FEB4C85005606AF /* TodoDetails.swift */,
 				D8FFE40C1FEB312E005606AF /* Assets.xcassets */,
 				D8FFE40E1FEB312E005606AF /* LaunchScreen.storyboard */,
 				D8FFE4111FEB312E005606AF /* Info.plist */,
