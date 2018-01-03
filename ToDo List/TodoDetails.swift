@@ -9,6 +9,11 @@ import UIKit
 
 class TodoDetails: UIViewController {
     
+    
+    @IBOutlet weak var listName: UILabel!
+    
+    var agenda = ""
+    
     func hexStringToUIColor (hex:String) -> UIColor {
         var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
         
@@ -34,28 +39,13 @@ class TodoDetails: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        var navbar = hexStringToUIColor(hex: "F9AA90")
+        let navbar = hexStringToUIColor(hex: "F9AA90")
         
         navigationController?.navigationBar.barTintColor = navbar
+        
+        listName.text = agenda
 
-
-        // Do any additional setup after loading the view.
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

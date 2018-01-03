@@ -126,17 +126,24 @@ class TodoList: UITableViewController,UITextFieldDelegate {
         
     }
     
+    var valueToPass:String!
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        //let todoName = segue.destination as! TodoDetails
-        
-        //todoName.name = sender as! String
+        if (segue.identifier == "todoDetails") {
+            
+            let viewController = segue.destination as! TodoDetails
+            viewController.agenda = valueToPass
+        }
         
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //self.tableView.deselectRow(at: indexPath, animated: true)
-        performSegue(withIdentifier: "todoDetails", sender: nil)
-    }
+        
+        let indexPath = tableView.indexPathForSelectedRow;
+        let currentCell = tableView.cellForRow(at: indexPath!) as UITableViewCell!;
+        
+        valueToPass = currentCell!.textLabel?.text
+        performSegue(withIdentifier: "todoDetails", sender: self)    }
 
 }

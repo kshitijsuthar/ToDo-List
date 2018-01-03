@@ -60,7 +60,7 @@
         <!--ToDo Details-->
         <scene sceneID="7ur-ys-9YM">
             <objects>
-                <viewController id="VKl-FY-4ta" sceneMemberID="viewController">
+                <viewController id="VKl-FY-4ta" customClass="TodoDetails" customModule="ToDo_List" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Avw-1J-yPQ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -141,6 +141,9 @@
                         <viewLayoutGuide key="safeArea" id="faA-hH-7Yt"/>
                     </view>
                     <navigationItem key="navigationItem" title="ToDo Details" id="Wwe-hz-w6M"/>
+                    <connections>
+                        <outlet property="listName" destination="rVk-Rf-M53" id="X3X-EU-IeS"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bj3-fV-quw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
