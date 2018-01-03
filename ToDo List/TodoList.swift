@@ -83,6 +83,60 @@ class TodoList: UITableViewController,UITextFieldDelegate {
         return cell
     }
 
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        
+        let save = input.text
+        
+        self.save(name: save!)
+        self.tableView.reloadData()
+        input.text = ""
+        
+    }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        input.resignFirstResponder()
+        
+        return true
+    }
+    
+    func save(name: String) {
+        
+        guard let appdelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        
+        let managedContext = appdelegate.persistentContainer.viewContext
+        
+        let entity =
+            NSEntityDescription.entity(forEntityName: "ToDo",
+                                       in: managedContext)!
+        
+        let todo = NSManagedObject(entity: entity,
+                                   insertInto: managedContext)
+        
+        todo.setValue(name, forKeyPath: "name")
+        
+        do {
+            try managedContext.save()
+            names.append(todo)
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
+        
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        //let todoName = segue.destination as! TodoDetails
+        
+        //todoName.name = sender as! String
+        
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //self.tableView.deselectRow(at: indexPath, animated: true)
+        performSegue(withIdentifier: "todoDetails", sender: nil)
+    }
 
 }
