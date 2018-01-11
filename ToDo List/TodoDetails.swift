@@ -8,7 +8,7 @@
 import UIKit
 import CoreData
 
-class TodoDetails: UIViewController {
+class TodoDetails: UIViewController, UITextViewDelegate {
     
     
     @IBOutlet weak var listName: UILabel!
@@ -17,6 +17,8 @@ class TodoDetails: UIViewController {
     @IBOutlet weak var details: UITextView!
     
     var agenda = ""
+    
+    var notes: [NSManagedObject] = []
     
     //This function is used to change the navigation bar color
     func hexStringToUIColor (hex:String) -> UIColor {
@@ -50,50 +52,72 @@ class TodoDetails: UIViewController {
         navigationController?.navigationBar.barTintColor = navbar
         
         listName.text = agenda
+        
+        let tap:UITapGestureRecognizer = UITapGestureRecognizer(target:self, action: #selector(TodoDetails.closekeyboard))
+        
+        view.addGestureRecognizer(tap)
+        
+        self.details.delegate = self
 
     }
     
-//    func deleteAllData(entity: String)
-//    {
-//        //let appDelegate = UIApplication.shared.delegate as! AppDelegate
-//        let managedContext =  (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-//        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "ToDo")
-//        fetchRequest.returnsObjectsAsFaults = false
-//
-//        do
-//        {
-//            let results = try managedContext.fetch(fetchRequest)
-//            for managedObject in results
-//            {
-//                let managedObjectData:NSManagedObject = managedObject as! NSManagedObject
-//                managedContext.delete(managedObjectData)
-//            }
-//        } catch let error as NSError {
-//            print("Detele all data in \(entity) error : \(error) \(error.userInfo)")
-//        }
-//    }
-    
-    func deleteAllData(entity: String)
-    {
-        let managedContext =  (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "ToDo")
-        fetchRequest.returnsObjectsAsFaults = false
+    @objc func closekeyboard(){
+        view.endEditing(true)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
         
-        do
-        {
-            let results = try managedContext.fetch(fetchRequest)
-            for managedObject in results
-            {
-                let managedObjectData:NSManagedObject = managedObject as! NSManagedObject
-                managedContext.delete(managedObjectData)
-            }
-        } catch let error as NSError {
-            print("Detele all data in \(entity) error : \(error) \(error.userInfo)")
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+                return
         }
+        
+        let managedContext =
+            appDelegate.persistentContainer.viewContext
+        
+        let fetchRequest =
+            NSFetchRequest<NSManagedObject>(entityName: "ToDo")
+        
+        do {
+            notes = try managedContext.fetch(fetchRequest)
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        
+//        fetchRequest.returnsObjectsAsFaults = false
+//        do {
+//            //let result = try managedContext.fetch(fetchRequest)
+//            for item in notes {
+//                details.text = item.value(forKey: "notes") as! String
+//
+//            }
+//
+//        }
+        catch {
+            
+            print("Failed")
+        }
+        
     }
     
     
     @IBAction func Save(_ sender: UIButton) {
+        
+        let detail = self.notes[0]
+        
+        detail.setValue(details.text, forKey: "notes")
+        
+        do{
+            try detail.managedObjectContext?.save()
+        }
+        catch{
+            let saveerror = error as NSError
+            print(saveerror)
+        }
+        
+        print("%s",details.text)
+        
+        navigationController?.popViewController(animated: true)
     }
     
     @IBAction func Cancel(_ sender: UIButton) {
