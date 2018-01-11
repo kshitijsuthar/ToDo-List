@@ -12,8 +12,11 @@ class TodoList: UITableViewController,UITextFieldDelegate {
     
     @IBOutlet weak var input: UITextField!
     
+    //names is a mutable array which stores the data inputted by user
     var names: [NSManagedObject] = []
 
+    
+    //This function is used to change the navigation bar color
     func hexStringToUIColor (hex:String) -> UIColor {
         var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
         
@@ -39,7 +42,8 @@ class TodoList: UITableViewController,UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        var navbar = hexStringToUIColor(hex: "FC6D45")
+        //Above declared function is called here to input the color hex
+        let navbar = hexStringToUIColor(hex: "FC6D45")
         
         navigationController?.navigationBar.barTintColor = navbar
         
@@ -47,6 +51,7 @@ class TodoList: UITableViewController,UITextFieldDelegate {
         
     }
     
+    //This function is used to display the data stored in the database
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -66,6 +71,8 @@ class TodoList: UITableViewController,UITextFieldDelegate {
         } catch let error as NSError {
             print("Could not fetch. \(error), \(error.userInfo)")
         }
+        
+        self.tableView.reloadData()
     }
 
 
@@ -76,6 +83,7 @@ class TodoList: UITableViewController,UITextFieldDelegate {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        //This code is used to fill the tableview with user input
         let ToDo = names[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         cell.textLabel?.text = ToDo.value(forKeyPath: "name") as? String
@@ -100,6 +108,41 @@ class TodoList: UITableViewController,UITextFieldDelegate {
         return true
     }
     
+    //This function is for right swipe to delete
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        
+        let managedContext =  (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        
+        if editingStyle == .delete {
+            managedContext.delete(names[indexPath.row])
+            do {
+                try managedContext.save()
+                self.tableView.reloadData()
+            }
+            catch let error as NSError {
+                print("Could not save. \(error), \(error.userInfo)")
+            }
+        }
+    }
+    
+    //This function is declared to implement left swipe, which will mark the task as completed
+    override func tableView(_ tableView: UITableView,
+                            leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
+    {
+        let cell = tableView.cellForRow(at: indexPath)
+        let closeAction = UIContextualAction(style: .normal, title:  "Done", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
+            
+            cell!.textLabel?.isEnabled = false
+            
+            success(true)
+        })
+        closeAction.backgroundColor = .blue
+        
+        return UISwipeActionsConfiguration(actions: [closeAction])
+        
+    }
+    
+    //This function is used to store the user inputted data in the database
     func save(name: String) {
         
         guard let appdelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -130,16 +173,19 @@ class TodoList: UITableViewController,UITextFieldDelegate {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
+        //Row value will be passed to the next screen form here
         if (segue.identifier == "todoDetails") {
             
             let viewController = segue.destination as! TodoDetails
-            viewController.agenda = valueToPass
+            viewController.agenda = valueToPass /*agenda is a label declared in the next view controller,
+                                                which is ToDoDetails*/
         }
         
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        //user selected row will be detected here
         let indexPath = tableView.indexPathForSelectedRow;
         let currentCell = tableView.cellForRow(at: indexPath!) as UITableViewCell!;
         
